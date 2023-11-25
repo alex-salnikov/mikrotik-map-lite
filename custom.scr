@@ -1,0 +1,62 @@
+# wait for interfaces to settle
+#/delay delay-time=30s
+
+:local mgmtIP "192.168.1.253/24"
+:local pswd "1234"
+
+
+## --------------------------------
+## Users
+# change admin's password
+/user/set admin password=$pswd
+
+# add user
+/user add name="admin2" password=$pswd group="full"
+
+
+## --------------------------------
+## Wait
+# pause untill all interfaces are up
+:local count 0;
+:while ([/interface ethernet find] = "") do={
+  :if ($count = 30) do={
+    /quit;
+  }
+  :delay 1s; :set count ($count +1);
+};
+:local count 0;
+:while ([/interface wireless print count-only] < 1) do={
+  :set count ($count +1);
+  :if ($count = 40) do={
+    /quit
+  }
+  :delay 1s;
+};
+
+
+## --------------------------------
+## ether1
+# enable ether1
+/interface/ethernet/enable ether1
+
+# set static ip
+#/ip/address/add address=$mgmtIP interface=ether1 comment="mgmt interface"
+# set dynamic ip
+/ip dhcp-client add interface=ether1 disabled=no
+
+# set ether1 as mgmt interface
+/interface/list/add name=mgmt comment="management interface list"
+/interface/list/member/add list=mgmt interface=ether1 comment="off bridge ether port for mgmt"
+
+
+## --------------------------------
+## Services
+#/ip service disable telnet,ftp,www,www-ssl,winbox,api,api-ssl
+#/ip service enable ssh
+/ip service enable ssh,telnet,ftp,www,www-ssl,winbox,api,api-ssl
+
+
+## --------------------------------
+# References
+# https://www.cs.cmu.edu/~davide/howto/MikroTik_noserial.html
+# https://gitlab.com/aussielunix/homelab/routeros
