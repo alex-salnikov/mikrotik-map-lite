@@ -58,5 +58,11 @@
 
 ## --------------------------------
 # References
-# https://www.cs.cmu.edu/~davide/howto/MikroTik_noserial.html
-# https://gitlab.com/aussielunix/homelab/routeros
+# - https://www.cs.cmu.edu/~davide/howto/MikroTik_noserial.html
+# - https://wiki.mikrotik.com/wiki/Manual:TOC
+
+
+## --------------------------------
+# Acknowledgements
+# this project is built upon parts from following sources:
+# - https://gitlab.com/aussielunix/homelab/routeros
